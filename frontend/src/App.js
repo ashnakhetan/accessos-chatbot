@@ -209,7 +209,13 @@ function App() {
         borderRadius={0}
         border={0}
         width="700px"
-        sx={{ height: "80vh", border:"none", display: "flex", flexDirection: "row", gap: "10px" }}
+        sx={{
+          height: "80vh",
+          border: "none",
+          display: "flex",
+          flexDirection: "row",
+          gap: "10px",
+        }}
       >
         <MessagesPane messages={messages} />
         {/* <Selection> */}
