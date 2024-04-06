@@ -199,7 +199,7 @@ function App() {
   };
 
   return (
-    <Grid container direction="column" alignItems="center">
+    <Grid  container direction="column" alignItems="center" sx={{ backgroundImage: `url('path_to_texture_image.jpg'), linear-gradient(to bottom, #e6f7ff, #ffffff)`, backgroundSize: "cover", minHeight: "100vh"  }}>
       <Grid
         container
         direction="column"
