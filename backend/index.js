@@ -1,7 +1,7 @@
 import express from "express";
 import bodyParser from "body-parser";
 import cors from "cors";
-import OpenAI from "openai";
+// import OpenAI from "openai";
 import "dotenv/config";
 import Anthropic from "@anthropic-ai/sdk";
 
@@ -10,16 +10,22 @@ const port = 8000;
 app.use(bodyParser.json());
 app.use(cors());
 
-const openai = new OpenAI({
-  apiKey: process.env.OPEN_AI_API_KEY,
-});
+// const openai = new OpenAI({
+//   apiKey: process.env.OPEN_AI_API_KEY,
+// });
 
 const anthropic = new Anthropic();
+
+app.get("/", (request, response) => {
+  response.send("Hello from the server!");
+});
 
 app.post("/", async (request, response) => {
   try {
     const { message } = request.body;
-    console.log("request:", chats);
+    console.log(message);
+    const content = message.content;
+    console.log("string:", content);
 
     const msg = await anthropic.messages.create({
       model: "claude-3-opus-20240229",
@@ -33,7 +39,7 @@ app.post("/", async (request, response) => {
           content: [
             {
               type: "text",
-              text: `MESSAGE: "${message}"`,
+              text: `MESSAGE: "${content}"`,
             },
           ],
         },
@@ -41,10 +47,12 @@ app.post("/", async (request, response) => {
     });
     console.log(msg);
 
-    const result3 = msg.choices[0].message;
+    // console.log("msg.choices[0].message:", msg.choices[0].message);
+    const result = msg.content[0].text;
+    console.log("Result:", result);
 
     response.json({
-      output: result3,
+      output: result,
     });
   } catch (error) {
     console.error("Error processing request:", error);

@@ -40,7 +40,7 @@ function App() {
 
   const getChatbotResponse = async (userMessage) => {
     try {
-      // Assuming your server is running locally on port 8000
+      console.log("userMessage:", userMessage);
       const response = await fetch("http://localhost:8000/", {
         method: "POST",
         headers: {
@@ -49,6 +49,7 @@ function App() {
         body: JSON.stringify({ message: userMessage }),
       });
       if (!response.ok) {
+        console.log("response:", response);
         throw new Error("Network response was not ok");
       }
       const data = await response.json();
