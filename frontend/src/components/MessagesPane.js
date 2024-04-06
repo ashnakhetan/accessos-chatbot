@@ -2,7 +2,7 @@ import { Grid } from "@mui/material";
 import Message from "./Message";
 import SelectionGroupMessage from "./SelectionGroupMessage";
 
-const MessagesPane = ({ messages }) => {
+const MessagesPane = ({ messages, onSelect }) => {
   return (
     <Grid container>
       {messages.map((message, index) =>
@@ -15,8 +15,8 @@ const MessagesPane = ({ messages }) => {
         ) : (
           <SelectionGroupMessage
             key={index}
-            sender={message.sender}
             content={message.content}
+            onSelect={onSelect}
           />
         )
       )}
