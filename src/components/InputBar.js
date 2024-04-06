@@ -12,5 +12,6 @@ const InputBar = ({ placeholder, onSubmit }) => {
 
 // make this prettier:
 // make the submit button a send icon
+// This is the modification I did.
 
 export default InputBar;
