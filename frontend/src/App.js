@@ -17,7 +17,6 @@ function App() {
     "Details of Incident",
     "Weapon Involved",
   ]);
-  // const [chatbotMessages, setChatbotMessages] = useState([]);
 
   useEffect(() => {
     // creates a chatbot response every time the user sends a message
@@ -217,13 +216,13 @@ function App() {
           gap: "10px",
         }}
       >
-        <MessagesPane messages={messages} />
+        <MessagesPane messages={messages} onSelect={onSelect} />
         {/* <Selection> */}
-        <Selection emoji="🚨" text="Emergency" onSelect={onSelect} />
+        {/* <Selection emoji="🚨" text="Emergency" onSelect={onSelect} />
         {/* <Selection emoji="🍕" text="Food" onSelect={onSelect} /> */}
-        <Selection emoji="🚑" text="Medical" onSelect={onSelect} />
+        {/* <Selection emoji="🚑" text="Medical" onSelect={onSelect} />
         <Selection emoji="🔥" text="Fire" onSelect={onSelect} />
-        <Selection emoji="🚔" text="Police" onSelect={onSelect} />
+        <Selection emoji="🚔" text="Police" onSelect={onSelect} /> */}
         {/* </Selection> */}
       </Grid>
       <Grid item sx={{ position: "absolute", bottom: 50, left: 105 }}>

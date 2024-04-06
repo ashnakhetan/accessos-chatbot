@@ -1,18 +1,20 @@
 import { Grid, Typography } from "@mui/material";
 import Selection from "./Selection";
 
-const SelectionGroupMessage = ({ sender, content }) => {
+const SelectionGroupMessage = ({ content, onSelect }) => {
   console.log("SelectionGroupMessage content:", content);
   return (
-    <Grid item xs={12}>
+    <Grid container display="flex" flexDirection="row">
       {Array.isArray(content) &&
         content.map((selection, index) => (
-          <Selection
-            key={index}
-            sender={sender}
-            emoji={selection.emoji}
-            text={selection.text}
-          />
+          <Grid item>
+            <Selection
+              key={index}
+              emoji={selection.emoji}
+              text={selection.text}
+              onSelect={onSelect}
+            />
+          </Grid>
         ))}
     </Grid>
   );
