@@ -49,13 +49,13 @@ const InputBar = ({ placeholder, onChange, onSubmit }) => {
           style={{ marginLeft: 0 }} // Set left margin to 0 to start at the very left
         />
       </Grid>
-      <Grid item alignItems = "center">
+      <Grid item alignItems = "right" >
         <Button
           variant="contained"
           color="primary"
           startIcon={<SendIcon />}
           onClick={onSubmit}
-          sx={{ fontSize: "1rem", padding: "12px 24px" }}
+          sx={{ fontSize: "1rem", padding: "12px 24px", position: "relative", bottom: 0, left: 300 }}
         >
           Send
         </Button>

@@ -109,10 +109,10 @@ function App() {
         alignItems="center"
         margin="auto"
         justifyContent="center"
-        borderRadius={1}
-        border={1}
+        borderRadius={0}
+        border={0}
         width="700px"
-        sx={{ height: "80vh" }}
+        sx={{ height: "80vh", border:"none", display: "flex", flexDirection: "row", gap: "10px" }}
       >
         <MessagesPane messages={messages} />
         {/* <Selection> */}
