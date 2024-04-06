@@ -1,17 +1,16 @@
 import { Grid, Typography } from "@mui/material";
-import Button from "@mui/material/Button";
+import IconButton from "@mui/material/IconButton";
+import SendIcon from "@mui/icons-material/Send"; // Import the send icon
 
 const InputBar = ({ placeholder, onSubmit }) => {
   return (
-    <Grid container>
+    <Grid container alignItems="center">
       <input placeholder={placeholder} />
-      <Button onClick={onSubmit}>Submit</Button>
+      <IconButton onClick={onSubmit} color="primary">
+        <SendIcon />
+      </IconButton>
     </Grid>
   );
 };
-
-// make this prettier:
-// make the submit button a send icon
-// This is the modification I did.
 
 export default InputBar;
