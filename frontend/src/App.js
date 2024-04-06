@@ -3,18 +3,36 @@ import Message from "./components/Message";
 import { Grid, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import InputBar from "./components/InputBar";
+import Selection from "./components/Selection";
+import MessagesPane from "./components/MessagesPane";
 
 function App() {
   const [messages, setMessages] = useState([]);
+  const [userMessage, setUserMessage] = useState("");
 
   useEffect(() => {
-    getChatbotResponse();
+    if (
+      messages.length > 0 &&
+      messages[messages.length - 1].sender === "user"
+    ) {
+      getChatbotResponse();
+    }
   }, [messages]);
 
   const onMessageSubmit = (e) => {
     const currentUserMessage = {
       sender: "user",
-      content: e.target.value,
+      content: userMessage,
+    };
+    setMessages([...messages, currentUserMessage]);
+  };
+
+  const onSelect = (emoji, text) => {
+    // add this as a user message
+    const currentUserMessage = {
+      sender: "user",
+      emoji: emoji,
+      content: text,
     };
     setMessages([...messages, currentUserMessage]);
   };
@@ -25,6 +43,7 @@ function App() {
     const currentChatbotResponse = {
       sender: "chatbot",
       content: response,
+      type: "message", // or "selection"
     };
     setMessages([...messages, currentChatbotResponse]);
   };
@@ -63,11 +82,21 @@ function App() {
           sender={sampleChatResponse.sender}
           content={sampleChatResponse.content}
         />
+        <MessagesPane messages={messages} />
+        {/* <Selection> */}
+        <Selection emoji="🚨" text="Emergency" onSelect={onSelect} />
+        {/* <Selection emoji="🍕" text="Food" onSelect={onSelect} /> */}
+        <Selection emoji="🚑" text="Medical" onSelect={onSelect} />
+        <Selection emoji="🔥" text="Fire" onSelect={onSelect} />
+        <Selection emoji="🚔" text="Police" onSelect={onSelect} />
+        {/* </Selection> */}
       </Grid>
       <Grid item>
         <InputBar
           placeholder="Use this to provide us textual details, if you can"
           onSubmit={onMessageSubmit}
+          // onChange={onInputChange}
+          onChange={(e) => setUserMessage(e.target.value)}
         />
       </Grid>
     </Grid>
