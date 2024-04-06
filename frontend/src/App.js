@@ -123,7 +123,7 @@ function App() {
         <Selection emoji="🚔" text="Police" onSelect={onSelect} />
         {/* </Selection> */}
       </Grid>
-      <Grid item>
+      <Grid item sx={{ position: "absolute", bottom: 50, left: 105 }}>
         <InputBar
           placeholder="Use this to provide us textual details, if you can"
           onSubmit={onMessageSubmit}
