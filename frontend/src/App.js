@@ -5,12 +5,22 @@ import { useEffect, useState } from "react";
 import InputBar from "./components/InputBar";
 import Selection from "./components/Selection";
 import MessagesPane from "./components/MessagesPane";
+import questionsDict from "./questions";
+import questionPrefixes from "./questionPrefixes";
 
 function App() {
   const [messages, setMessages] = useState([]);
   const [userMessage, setUserMessage] = useState("");
+  const [detailsToRequest, setDetailsToRequest] = useState([
+    "Address",
+    "Type of Incident",
+    "Details of Incident",
+    "Weapon Involved",
+  ]);
+  // const [chatbotMessages, setChatbotMessages] = useState([]);
 
   useEffect(() => {
+    // creates a chatbot response every time the user sends a message
     if (
       messages.length > 0 &&
       messages[messages.length - 1].sender === "user"
@@ -19,27 +29,148 @@ function App() {
     }
   }, [messages]);
 
+  useEffect(() => {
+    // creates a chatbot response when we know what new detail to request
+    if (detailsToRequest.length === 0) {
+      const currentChatbotResponses = [
+        {
+          sender: "chatbot",
+          content:
+            "You've provided all the information we need. Someone is on their way. You may continue to chat with us and provide more details, if you are able.",
+          type: "text",
+        },
+      ];
+      // setChatbotMessages([...currentChatbotResponses]);
+      setMessages([...messages, ...currentChatbotResponses]);
+      return;
+    }
+    const detail = detailsToRequest[0]; // pick the first detail that the chatbot needs to request
+    const question = questionsDict[detail].question;
+    console.log("question:", question);
+    const options = questionsDict[detail].options;
+    console.log("options:", options);
+
+    const randomPrefix = // add an appropriate message prefix
+      messages.length < 2
+        ? questionPrefixes.initial[
+            Math.floor(Math.random() * questionPrefixes.initial.length)
+          ]
+        : questionPrefixes.subsequent[
+            Math.floor(Math.random() * questionPrefixes.subsequent.length)
+          ];
+
+    const currentChatbotResponses = [
+      // make the question message
+      {
+        sender: "chatbot",
+        content: randomPrefix + " " + question,
+        type: "text",
+      },
+    ];
+
+    if (options != null) {
+      // push the options
+      currentChatbotResponses.push({
+        sender: "chatbot",
+        content: options,
+        type: "selection",
+      });
+    }
+    setMessages([...messages, ...currentChatbotResponses]);
+    // setChatbotMessages([...currentChatbotResponses]);
+    return;
+  }, [detailsToRequest]);
+
   const onMessageSubmit = (e) => {
+    // adds the user's message to the state
     const currentUserMessage = {
       sender: "user",
       content: userMessage,
+      type: "text",
     };
     setMessages([...messages, currentUserMessage]);
     setUserMessage("");
   };
 
   const onSelect = (emoji, text) => {
-    // add this as a user message
+    // when a user selects an option, adds this as a message
     const currentUserMessage = {
       sender: "user",
       emoji: emoji,
       content: text,
+      type: "text",
     };
     setMessages([...messages, currentUserMessage]);
   };
 
+  const createReplyMessage = (apiResponse) => {
+    // helper function to construct a reply message
+    // const criticalDetails = [
+    //   "Address",
+    //   "Type of Incident",
+    //   "Details of Incident",
+    //   "Weapon Involved",
+    // ];
+    const detailsGiven = apiResponse.split(/[\n,]+/);
+    console.log("detailsGiven:", detailsGiven);
+
+    let currDetailsToRequest = detailsToRequest.filter(
+      (x) => !detailsGiven.some((detail) => detail.includes(x))
+    );
+    setDetailsToRequest(currDetailsToRequest);
+    console.log("detailsToRequest:", detailsToRequest);
+
+    // if (detailsToRequest.length === 0) {
+    //   const currentChatbotResponses = [
+    //     {
+    //       sender: "chatbot",
+    //       content:
+    //         "You've provided all the information we need. Someone is on their way. You may continue to chat with us and provide more details, if you are able.",
+    //       type: "text",
+    //     },
+    //   ];
+    //   return currentChatbotResponses;
+    // }
+    // const detail = detailsToRequest[0]; // pick the first detail that the chatbot needs to request
+    // const question = questionsDict[detail].question;
+    // console.log("question:", question);
+    // const options = questionsDict[detail].options;
+    // console.log("options:", options);
+
+    // const randomPrefix = // add an appropriate message prefix
+    //   messages.length < 2
+    //     ? questionPrefixes.initial[
+    //         Math.floor(Math.random() * questionPrefixes.initial.length)
+    //       ]
+    //     : questionPrefixes.subsequent[
+    //         Math.floor(Math.random() * questionPrefixes.subsequent.length)
+    //       ];
+
+    // const currentChatbotResponses = [
+    //   // make the question message
+    //   {
+    //     sender: "chatbot",
+    //     content: randomPrefix + " " + question,
+    //     type: "text",
+    //   },
+    // ];
+
+    // if (options != null) {
+    //   // push the options
+    //   currentChatbotResponses.push({
+    //     sender: "chatbot",
+    //     content: options,
+    //     type: "selection",
+    //   });
+    // }
+
+    // return currentChatbotResponses;
+  };
+
   const getChatbotResponse = async (userMessage) => {
+    // get chatbot response and add to state
     try {
+      // call to server to understand response and what information we now have
       console.log("userMessage:", userMessage);
       const response = await fetch("http://localhost:8000/", {
         method: "POST",
@@ -54,52 +185,18 @@ function App() {
       }
       const data = await response.json();
       console.log("Success:", data);
-      const currentChatbotResponse = {
-        sender: "chatbot",
-        content: data.output.content.text, // Make sure this matches the structure of your response
-        type: "message", // Assuming all responses are type "message" for simplicity
-      };
-      setMessages((prevMessages) => [...prevMessages, currentChatbotResponse]);
+      const apiResponse = data.output;
+      console.log("Api Response:", apiResponse);
+
+      createReplyMessage(apiResponse);
+      // const chatbotResponses = createReplyMessage(apiResponse); // create a reply, given this api response
+      // console.log("chatbotResponses:", chatbotResponses);
+      // add all of the chatbot's response messages to the state
+      // setMessages((prevMessages) => [...prevMessages, ...chatbotResponses]);
     } catch (error) {
       console.error("There was a problem with your fetch operation:", error);
-      // Here, handle the error based on your application's needs
     }
   };
-
-  // const getChatbotResponse = async (userMessage) => {
-  //   // logic to get the correct response, given the most recent message
-  //   try {
-  //     const response = await fetch("http://localhost:8000/", {
-  //       method: "POST", // or 'GET', depending on API
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //       },
-  //       body: JSON.stringify({ message: userMessage }),
-  //     });
-  //     if (!response.ok) {
-  //       throw new Error("Network response was not ok");
-  //     }
-
-  //     const data = await response.json();
-  //     console.log("Success:", data);
-  //     const currentChatbotResponse = {
-  //       sender: "chatbot",
-  //       content: data.response, // Assuming the API returns the response text in `response` key
-  //       type: "message", // or "selection"
-  //     };
-  //     setMessages((prevMessages) => [...prevMessages, currentChatbotResponse]);
-  //   } catch (error) {
-  //     console.error("There was a problem with your fetch operation:", error);
-  //   }
-
-  //   // const response = "Sample chatbot response";
-  //   // const currentChatbotResponse = {
-  //   //   sender: "chatbot",
-  //   //   content: response,
-  //   //   type: "message", // or "selection"
-  //   // };
-  //   // setMessages([...messages, currentChatbotResponse]);
-  // };
 
   return (
     <Grid container direction="column" alignItems="center">
