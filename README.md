@@ -1,10 +1,11 @@
-TO RUN:
+# TO RUN:
 1. clone the repo
 2. npm i
 3. cd into backend, run node index
 4. cd into frontent, run npm start
 5. travel to localhost:3000 and et viola!
 
+# Our Project
 Getting to understand the accessSOS application has been a great experience! The use of icon-based communication to broaden 911 accessibility in emergency situations is a unique solution to a problem that over 10% of the American population faces: either auditive disabilities or the inability to communicate in English.
 
 We have taken the original concept of the application and place it into an AI-powered chatbot, with the following improvements: 
