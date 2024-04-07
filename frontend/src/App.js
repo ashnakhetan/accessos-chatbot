@@ -247,9 +247,29 @@ function App() {
             position: "absolute",
             top: 0,
             y: 0, // Add a bit of right padding to avoid content covering the scrollbar
+            wordWrap: "break-word",
+            overflowWrap: "break-word",
           }}
         >
-          <MessagesPane messages={messages} onSelect={onSelect} />
+          <MessagesPane
+            messages={messages}
+            onSelect={onSelect}
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              gap: "10px",
+              wordWrap: "break-word",
+              overflowWrap: "break-word",
+              p: "20px",
+            }}
+          />
+          {/* <Selection> */}
+          {/* <Selection emoji="🚨" text="Emergency" onSelect={onSelect} />
+        {/* <Selection emoji="🍕" text="Food" onSelect={onSelect} /> */}
+          {/* <Selection emoji="🚑" text="Medical" onSelect={onSelect} />
+        <Selection emoji="🔥" text="Fire" onSelect={onSelect} />
+        <Selection emoji="🚔" text="Police" onSelect={onSelect} /> */}
+          {/* </Selection> */}
         </Box>
       </Grid>
       <Grid

@@ -16,7 +16,7 @@ const Message = ({ sender, content }) => {
     >
       <Grid
         item
-        sx={{ backgroundColor: bubbleColor, p: "10px", borderRadius: 30 }}
+        sx={{ backgroundColor: bubbleColor, paddingLeft: "33px", paddingRight: "33px", paddingTop:"27px", paddingBottom:"27px", borderRadius: 30 }}
       >
         <Typography color={textColor}>{content}</Typography>
       </Grid>
