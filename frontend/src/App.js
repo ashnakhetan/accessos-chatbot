@@ -23,23 +23,22 @@ function App() {
   }); // this is the only information we start off knowing
   const [message911Sent, setMessage911Sent] = useState(false);
   const [emergencyType, setEmergencyType] = useState(null); // ["Medical", "Fire", "Police", "Mental"
-  let currentQuestionsDict = questionsDict;
+  const [currentQuestionsDict, setQuestionsDict] = useState(questionsDict);
 
   // once the initial message is sent to 911, we switch to the extra questions
   useEffect(() => {
-    currentQuestionsDict = message911Sent
-      ? relevantQuestionsDict
-      : questionsDict;
-
-    if (currentQuestionsDict == relevantQuestionsDict) {
-      let keys = Object.keys(currentQuestionsDict.Any);
-      console.log("currentQuestionsDict.Any keys:", keys);
-      setDetailsToRequest(keys);
-      keys = Object.keys(currentQuestionsDict[emergencyType]);
-      console.log("currentQuestionsDict[typeOfIncident] keys:", keys);
-      setDetailsToRequest([...detailsToRequest, ...keys]);
+    if (message911Sent) {
+      setQuestionsDict(relevantQuestionsDict[emergencyType]);
     }
   }, [message911Sent]);
+
+  useEffect(() => {
+    if (currentQuestionsDict == relevantQuestionsDict[emergencyType]) {
+      let keys = Object.keys(currentQuestionsDict);
+      console.log("currentQuestionsDict[typeOfIncident] keys:", keys);
+      setDetailsToRequest(keys);
+    }
+  }, [currentQuestionsDict]);
 
   // triggers the chatbot response every time the user sends a message
   useEffect(() => {
@@ -47,20 +46,21 @@ function App() {
       messages.length > 0 &&
       messages[messages.length - 1].sender === "user"
     ) {
-      getChatbotResponse(messages[messages.length - 1]);
+      getChatbotResponse(messages[messages.length - 1], detailsToRequest);
     }
   }, [messages]);
 
   // generates a chatbot response when we know what new detail to request
   useEffect(() => {
-    if (detailsToRequest.length === 0) {
+    if (detailsToRequest.length === 0 && !message911Sent) {
       // when all critical information acquired, print summary
+      const formattedSummary = Object.entries(infoToProvide911)
+        .map(([key, value]) => `${key}: ${value}`)
+        .join("; ");
       const currentChatbotResponses = [
         {
           sender: "chatbot",
-          content: `You've provided all the information we need. Here is a summary: ${JSON.stringify(
-            infoToProvide911
-          )}`,
+          content: `You've provided all the information we need. Here is a summary: ${formattedSummary}`,
           type: "text",
         },
       ];
@@ -74,9 +74,15 @@ function App() {
 
       setMessages([...messages, ...currentChatbotResponses]);
       setMessage911Sent(true);
+      console.log("have set message911Sent to true");
       return;
     }
+
+    console.log("detailsToRequest:", detailsToRequest);
     const detail = detailsToRequest[0]; // pick the first detail that the chatbot needs to request
+    console.log("detail:", detail);
+    console.log("currentQuestionsDict:", currentQuestionsDict);
+    console.log("curretn qdfsd", currentQuestionsDict[detail]);
     const question = currentQuestionsDict[detail].question;
     console.log("question:", question);
     const options = currentQuestionsDict[detail].options;
@@ -167,17 +173,21 @@ function App() {
     console.log("detailsToRequest:", detailsToRequest);
   };
 
-  const getChatbotResponse = async (userMessage) => {
+  const getChatbotResponse = async (userMessage, detailsToRequest) => {
     // get chatbot response and add to state
     try {
       // call to server to understand response and what information we now have
       console.log("userMessage:", userMessage);
+      console.log("detailsToRequest:", detailsToRequest);
       const response = await fetch("http://localhost:8000/", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ message: userMessage }),
+        body: JSON.stringify({
+          message: userMessage,
+          detailsToRequest: detailsToRequest,
+        }),
       });
       if (!response.ok) {
         console.log("response:", response);

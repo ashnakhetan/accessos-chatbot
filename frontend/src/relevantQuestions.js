@@ -1,5 +1,15 @@
 const relevantQuestionsDict = {
   Medical: {
+    Location: {
+      question:
+        "Please provide more details about your location. You may select an option or describe with text.",
+      options: [
+        { text: "Indoor", emoji: "🏠" },
+        { text: "Outdoor", emoji: "🌳" },
+        { text: "Moving", emoji: "🚗" },
+      ],
+      messagePrefix: "Location: ",
+    },
     Type: {
       question:
         "Can you describe the type of medical issue you are facing? You may select one or provide textual details.",
@@ -13,6 +23,7 @@ const relevantQuestionsDict = {
         { text: "Assault", emoji: "👊" },
         { text: "Crime Active", emoji: "🔫" },
       ],
+      messagePrefix: "Type: ",
     },
     Description: {
       question: "Can you describe the patient's condition?",
@@ -20,9 +31,20 @@ const relevantQuestionsDict = {
         { text: "Conscious", emoji: "😀" },
         { text: "Unconscious", emoji: "😵" },
       ],
+      messagePrefix: "Description: ",
     },
   },
   Fire: {
+    Location: {
+      question:
+        "Please provide more details about your location. You may select an option or describe with text.",
+      options: [
+        { text: "Indoor", emoji: "🏠" },
+        { text: "Outdoor", emoji: "🌳" },
+        { text: "Moving", emoji: "🚗" },
+      ],
+      messagePrefix: "Location: ",
+    },
     Type: {
       question:
         "Can you describe the type of fire you are facing? You may select one or provide textual details.",
@@ -34,6 +56,7 @@ const relevantQuestionsDict = {
         { text: "Electrical", emoji: "⚡" },
         { text: "Chemical", emoji: "⚗️" },
       ],
+      messagePrefix: "Type: ",
     },
     Description: {
       question: "Are there people or pets inside the building?",
@@ -41,9 +64,20 @@ const relevantQuestionsDict = {
         { text: "Yes", emoji: "👨‍👩‍👧‍👦" },
         { text: "No", emoji: "🚫" },
       ],
+      messagePrefix: "Description: ",
     },
   },
   Police: {
+    Location: {
+      question:
+        "Please provide more details about your location. You may select an option or describe with text.",
+      options: [
+        { text: "Indoor", emoji: "🏠" },
+        { text: "Outdoor", emoji: "🌳" },
+        { text: "Moving", emoji: "🚗" },
+      ],
+      messagePrefix: "Location: ",
+    },
     Type: {
       question:
         "Can you describe the type of police incident you are facing? You may select one or provide textual details.",
@@ -57,13 +91,25 @@ const relevantQuestionsDict = {
         { text: "Suspicious Activity", emoji: "🕵️" },
         { text: "Traffic Incident", emoji: "🚗" },
       ],
+      messagePrefix: "Type: ",
     },
     Description: {
       question: "Can you describe the suspect?",
       options: null,
+      messagePrefix: "Description: ",
     },
   },
   Mental: {
+    Location: {
+      question:
+        "Please provide more details about your location. You may select an option or describe with text.",
+      options: [
+        { text: "Indoor", emoji: "🏠" },
+        { text: "Outdoor", emoji: "🌳" },
+        { text: "Moving", emoji: "🚗" },
+      ],
+      messagePrefix: "Location: ",
+    },
     Type: {
       question:
         "Can you describe the type of mental health emergency you are facing? You may select one or provide textual details.",
@@ -77,6 +123,7 @@ const relevantQuestionsDict = {
         { text: "Self-Harm", emoji: "🩹" },
         { text: "Bullying", emoji: "👊" },
       ],
+      messagePrefix: "Type: ",
     },
     Description: {
       question:
@@ -85,6 +132,7 @@ const relevantQuestionsDict = {
         { text: "Yes", emoji: "🔪" },
         { text: "No", emoji: "🚫" },
       ],
+      messagePrefix: "Description: ",
     },
   },
   Any: {
@@ -96,11 +144,13 @@ const relevantQuestionsDict = {
         { text: "Outdoor", emoji: "🌳" },
         { text: "Moving", emoji: "🚗" },
       ],
+      messagePrefix: "Location: ",
     },
     Repeat: {
       question:
         "Please provide us with any other details you think will be helpful to authorities.",
       options: null,
+      messagePrefix: "Description: ",
     },
   },
 };

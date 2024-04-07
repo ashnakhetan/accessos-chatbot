@@ -18,17 +18,19 @@ app.get("/", (request, response) => {
 
 app.post("/", async (request, response) => {
   try {
-    const { message } = request.body;
+    console.log("Request body:", request.body);
+    const { message, detailsToRequest } = request.body;
     console.log(message);
     const content = message.content;
     console.log("string:", content);
+
+    const formattedDetails = detailsToRequest.map((s) => `- ${s}\n`);
 
     const msg = await anthropic.messages.create({
       model: "claude-3-opus-20240229",
       max_tokens: 1000,
       temperature: 0,
-      system:
-        'I am a 911 dispatcher. You will receive a message we received from a user. The following is the information we need. Can you extract the information provided, if they provided it? If they didn\'t provide it, please do not include it in your response. Format your answer as seen in the example later.\n- Address\n- Type of Incident\n- Details of Incident\n- Weapon Involved\n\nHere is an example of this task:\nMESSAGE: "hello i am hurt, my head is spinning, I AM ABOUT TO PASS OUT"\nYOUR RESPONSE: Type of Incident: Medical Emergency, Details of Incident: Head spinning and about to pass out\n\nDO NOT say: Address: Not Provided, Weapon Involved: Not Provided',
+      system: `I am a 911 dispatcher. You will receive a message we received from a user. The following is the information we need. Can you extract the information provided, if they provided it? If they didn\'t provide it, please do not include it in your response. Format your answer as seen in the example later.\n${formattedDetails}\n\nHere is an example of this task:\nMESSAGE: "hello i am hurt, my head is spinning, I AM ABOUT TO PASS OUT"\nYOUR RESPONSE: Type of Incident: Medical Emergency, Details of Incident: Head spinning and about to pass out\n\nDO NOT say: Address: Not Provided, Weapon Involved: Not Provided`,
       messages: [
         {
           role: "user",

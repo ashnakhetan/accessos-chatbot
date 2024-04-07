@@ -2,9 +2,8 @@ import { Grid, Typography } from "@mui/material";
 import Selection from "./Selection";
 
 const SelectionGroupMessage = ({ content, onSelect, type }) => {
-  console.log("SelectionGroupMessage content:", content);
   return (
-    <Grid container display="flex" flexDirection="row">
+    <Grid container display="flex" flexDirection="row" pl="20px" pt="0px">
       {Array.isArray(content) &&
         content.map((selection, index) => (
           <Grid item>
