@@ -1,6 +1,6 @@
 import "./App.css";
 import Message from "./components/Message";
-import { Grid, Typography } from "@mui/material";
+import { Grid, Typography , Box} from "@mui/material";
 import { useEffect, useState } from "react";
 import InputBar from "./components/InputBar";
 import Selection from "./components/Selection";
@@ -196,9 +196,10 @@ function App() {
       console.error("There was a problem with your fetch operation:", error);
     }
   };
+  //hello
 
   return (
-    <Grid  container direction="column" alignItems="center" sx={{ backgroundImage: `url('path_to_texture_image.jpg'), linear-gradient(to bottom, #e6f7ff, #ffffff)`, backgroundSize: "cover", minHeight: "100vh"  }}>
+    <Grid  container direction="column" alignItems="center" sx={{ backgroundImage: `url('path_to_texture_image.jpg'), linear-gradient(to bottom, #e6f7ff, #ffffff)`, backgroundSize: "cover", minHeight: "100vh" , paddingBottom: "20px", paddingTop:"40px"}}>
       <Grid
         container
         direction="column"
@@ -216,6 +217,14 @@ function App() {
           gap: "10px",
         }}
       >
+      <Box
+      sx={{
+        height: "100%",
+        width: "100%",
+        overflowY: "auto", // Enable vertical scrolling
+        paddingRight: "10px", // Add a bit of right padding to avoid content covering the scrollbar
+      }}
+      >
         <MessagesPane messages={messages} onSelect={onSelect} />
         {/* <Selection> */}
         {/* <Selection emoji="🚨" text="Emergency" onSelect={onSelect} />
@@ -224,8 +233,9 @@ function App() {
         <Selection emoji="🔥" text="Fire" onSelect={onSelect} />
         <Selection emoji="🚔" text="Police" onSelect={onSelect} /> */}
         {/* </Selection> */}
+      </Box>
       </Grid>
-      <Grid item sx={{ position: "absolute", bottom: 50, left: 105 }}>
+      <Grid item xs={12} sm={6} md={4} sx={{ position: "relative", left: -165, bottom: 20, paddingTop:"40px"}}>
         <InputBar
           placeholder="Use this to provide us textual details, if you can"
           onSubmit={onMessageSubmit}
