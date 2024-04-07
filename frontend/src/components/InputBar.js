@@ -1,46 +1,18 @@
-
-
-// import { Grid, Typography, TextField } from "@mui/material";
-// import Button from "@mui/material/Button";
-// import SendIcon from "@mui/icons-material/Send";
-
-// const InputBar = ({ placeholder, onChange, onSubmit }) => {
-//   return (
-//     <Grid container spacing={1} alignItems="left" style={{ width: "200%" }}>
-//       <Grid item alignItems = "left" style={{ width: "100%" }}>
-//         <TextField
-//           label={placeholder}
-//           variant="outlined"
-//           fullWidth
-//           onChange={onChange}
-//           sx={{ backgroundColor: "##D3D3D3" }}
-//         />
-//       </Grid>
-//       <Grid item alignItems = "left" style={{ width: "100%" }}>
-//         <Button
-//           variant="contained"
-//           color="primary"
-//           startIcon={<SendIcon style={{ color: "##eeeeee" }}  />}
-//           onClick={onSubmit}
-//         >
-//           Send
-//         </Button>
-//       </Grid>
-//     </Grid>
-//   );
-// };
-
-// export default InputBar;
-
 import { Grid, Typography, TextField } from "@mui/material";
 import Button from "@mui/material/Button";
 import SendIcon from "@mui/icons-material/Send";
 
-const InputBar = ({ placeholder, onChange, onSubmit }) => {
+const InputBar = ({ value, placeholder, onChange, onSubmit }) => {
   return (
-    <Grid container spacing={1} alignItems="center" style={{ paddingLeft: "0px" , width: "213%" }}>
+    <Grid
+      container
+      spacing={1}
+      alignItems="center"
+      style={{ paddingLeft: "0px", width: "213%" }}
+    >
       <Grid item style={{ width: "100%" }}>
         <TextField
+          value={value}
           label={placeholder}
           variant="outlined"
           fullWidth
@@ -49,13 +21,19 @@ const InputBar = ({ placeholder, onChange, onSubmit }) => {
           style={{ marginLeft: 0 }} // Set left margin to 0 to start at the very left
         />
       </Grid>
-      <Grid item alignItems = "right" >
+      <Grid item alignItems="right">
         <Button
           variant="contained"
           color="primary"
           startIcon={<SendIcon />}
           onClick={onSubmit}
-          sx={{ fontSize: "1rem", padding: "12px 24px", position: "relative", bottom: 0, left: 300 }}
+          sx={{
+            fontSize: "1rem",
+            padding: "12px 24px",
+            position: "relative",
+            bottom: 0,
+            left: 300,
+          }}
         >
           Send
         </Button>
@@ -65,4 +43,3 @@ const InputBar = ({ placeholder, onChange, onSubmit }) => {
 };
 
 export default InputBar;
-

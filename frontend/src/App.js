@@ -3,10 +3,10 @@ import Message from "./components/Message";
 import { Grid, Typography, Box } from "@mui/material";
 import { useEffect, useState, useRef } from "react";
 import InputBar from "./components/InputBar";
-import Selection from "./components/Selection";
 import MessagesPane from "./components/MessagesPane";
 import questionsDict from "./questions";
 import questionPrefixes from "./questionPrefixes";
+import relevantQuestionsDict from "./relevantQuestions";
 
 function App() {
   const [messages, setMessages] = useState([]);
@@ -21,9 +21,28 @@ function App() {
     "User Condition":
       "Person may be deaf, unable to communicate in English, or unable to speak.",
   }); // this is the only information we start off knowing
+  const [message911Sent, setMessage911Sent] = useState(false);
+  const [emergencyType, setEmergencyType] = useState(null); // ["Medical", "Fire", "Police", "Mental"
+  let currentQuestionsDict = questionsDict;
 
+  // once the initial message is sent to 911, we switch to the extra questions
   useEffect(() => {
-    // creates a chatbot response every time the user sends a message
+    currentQuestionsDict = message911Sent
+      ? relevantQuestionsDict
+      : questionsDict;
+
+    if (currentQuestionsDict == relevantQuestionsDict) {
+      let keys = Object.keys(currentQuestionsDict.Any);
+      console.log("currentQuestionsDict.Any keys:", keys);
+      setDetailsToRequest(keys);
+      keys = Object.keys(currentQuestionsDict[emergencyType]);
+      console.log("currentQuestionsDict[typeOfIncident] keys:", keys);
+      setDetailsToRequest([...detailsToRequest, ...keys]);
+    }
+  }, [message911Sent]);
+
+  // triggers the chatbot response every time the user sends a message
+  useEffect(() => {
     if (
       messages.length > 0 &&
       messages[messages.length - 1].sender === "user"
@@ -32,9 +51,10 @@ function App() {
     }
   }, [messages]);
 
+  // generates a chatbot response when we know what new detail to request
   useEffect(() => {
-    // creates a chatbot response when we know what new detail to request
     if (detailsToRequest.length === 0) {
+      // when all critical information acquired, print summary
       const currentChatbotResponses = [
         {
           sender: "chatbot",
@@ -53,12 +73,13 @@ function App() {
       });
 
       setMessages([...messages, ...currentChatbotResponses]);
+      setMessage911Sent(true);
       return;
     }
     const detail = detailsToRequest[0]; // pick the first detail that the chatbot needs to request
-    const question = questionsDict[detail].question;
+    const question = currentQuestionsDict[detail].question;
     console.log("question:", question);
-    const options = questionsDict[detail].options;
+    const options = currentQuestionsDict[detail].options;
     console.log("options:", options);
 
     const randomPrefix = // add an appropriate message prefix
@@ -70,8 +91,8 @@ function App() {
             Math.floor(Math.random() * questionPrefixes.subsequent.length)
           ];
 
+    // add the question and options as messages
     const currentChatbotResponses = [
-      // make the question message
       {
         sender: "chatbot",
         content: randomPrefix + " " + question,
@@ -80,7 +101,6 @@ function App() {
     ];
 
     if (options != null) {
-      // push the options
       currentChatbotResponses.push({
         sender: "chatbot",
         content: options,
@@ -88,14 +108,14 @@ function App() {
       });
     }
     setMessages([...messages, ...currentChatbotResponses]);
-    // setChatbotMessages([...currentChatbotResponses]);
     return;
   }, [detailsToRequest]);
 
+  // once all required information is obtained, we can send the information to the server (911 dispatch)
   useEffect(() => {
-    // once all required information is obtained, we can send the information to the server (911 dispatch)
     if (detailsToRequest.length === 0) {
       // insert details here on how to send to 911! (you guys know best how you do this)
+      setMessage911Sent(true);
     }
   }, [infoToProvide911]);
 
@@ -103,7 +123,6 @@ function App() {
     if (userMessage === "") {
       return;
     }
-    // adds the user's message to the state
     const currentUserMessage = {
       sender: "user",
       content: userMessage,
@@ -114,8 +133,11 @@ function App() {
   };
 
   const onSelect = (emoji, text, type) => {
+    if (type === "Type of Incident") {
+      setEmergencyType(text);
+    }
     // when a user selects an option, adds this as a message
-    const messagePrefix = questionsDict[type].messagePrefix;
+    const messagePrefix = currentQuestionsDict[type].messagePrefix;
 
     const currentUserMessage = {
       sender: "user",
@@ -181,7 +203,7 @@ function App() {
   };
 
   useEffect(() => {
-    scrollToBottom(); // Call the function when the component updates (e.g., new content is added)
+    scrollToBottom(); // call the function when the component updates (e.g., new content is added)
   }, [messages]);
 
   return (
@@ -228,13 +250,6 @@ function App() {
           }}
         >
           <MessagesPane messages={messages} onSelect={onSelect} />
-          {/* <Selection> */}
-          {/* <Selection emoji="🚨" text="Emergency" onSelect={onSelect} />
-        {/* <Selection emoji="🍕" text="Food" onSelect={onSelect} /> */}
-          {/* <Selection emoji="🚑" text="Medical" onSelect={onSelect} />
-        <Selection emoji="🔥" text="Fire" onSelect={onSelect} />
-        <Selection emoji="🚔" text="Police" onSelect={onSelect} /> */}
-          {/* </Selection> */}
         </Box>
       </Grid>
       <Grid
@@ -250,6 +265,7 @@ function App() {
         }}
       >
         <InputBar
+          value={userMessage}
           placeholder="Use this to provide us textual details, if you can"
           onSubmit={onMessageSubmit}
           onChange={(e) => setUserMessage(e.target.value)}
