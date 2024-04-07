@@ -1,7 +1,7 @@
 import "./App.css";
 import Message from "./components/Message";
 import { Grid, Typography , Box} from "@mui/material";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef} from "react";
 import InputBar from "./components/InputBar";
 import Selection from "./components/Selection";
 import MessagesPane from "./components/MessagesPane";
@@ -166,7 +166,18 @@ function App() {
       console.error("There was a problem with your fetch operation:", error);
     }
   };
-  //hello
+  // Inside your functional component
+const scrollToBottom = () => {
+  const scrollableContainer = document.getElementById("scrollableContainer");
+
+  if (scrollableContainer) {
+    scrollableContainer.scrollTop = scrollableContainer.scrollHeight;
+  }
+};
+
+useEffect(() => {
+  scrollToBottom(); // Call the function when the component updates (e.g., new content is added)
+}, [messages]);
 
   return (
     <Grid  container direction="column" alignItems="center" sx={{ backgroundImage: `url('path_to_texture_image.jpg'), linear-gradient(to bottom, #e6f7ff, #ffffff)`, backgroundSize: "cover", minHeight: "100vh" , paddingBottom: "20px", paddingTop:"40px"}}>
@@ -175,6 +186,7 @@ function App() {
         direction="column"
         alignItems="center"
         margin="auto"
+        position = "relative"
         justifyContent="center"
         borderRadius={0}
         border={0}
@@ -182,17 +194,21 @@ function App() {
         sx={{
           height: "80vh",
           border: "none",
-          display: "flex",
-          flexDirection: "row",
+          // display: "flex",
+          // flexDirection: "row",
           gap: "10px",
         }}
       >
       <Box
+      id = "scrollableContainer"
       sx={{
         height: "100%",
         width: "100%",
         overflowY: "auto", // Enable vertical scrolling
-        paddingRight: "10px", // Add a bit of right padding to avoid content covering the scrollbar
+        paddingRight: "10px",
+        position: "absolute",
+        top:0,
+        y:0 // Add a bit of right padding to avoid content covering the scrollbar
       }}
       >
         <MessagesPane messages={messages} onSelect={onSelect} />
@@ -205,7 +221,7 @@ function App() {
         {/* </Selection> */}
       </Box>
       </Grid>
-      <Grid item xs={12} sm={6} md={4} sx={{ position: "relative", left: -165, bottom: 20, paddingTop:"40px"}}>
+      <Grid item xs={12} sm={6} md={4} sx={{ position: "relative", left: -165, bottom: "5vh", paddingTop:"40px"}}>
         <InputBar
           placeholder="Use this to provide us textual details, if you can"
           onSubmit={onMessageSubmit}
