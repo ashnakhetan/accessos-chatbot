@@ -1,6 +1,6 @@
 import "./App.css";
 import Message from "./components/Message";
-import { Grid, Typography , Box} from "@mui/material";
+import { Grid, Typography, Box } from "@mui/material";
 import { useEffect, useState } from "react";
 import InputBar from "./components/InputBar";
 import Selection from "./components/Selection";
@@ -84,7 +84,7 @@ function App() {
       currentChatbotResponses.push({
         sender: "chatbot",
         content: options,
-        type: "selection",
+        type: detail,
       });
     }
     setMessages([...messages, ...currentChatbotResponses]);
@@ -100,6 +100,9 @@ function App() {
   }, [infoToProvide911]);
 
   const onMessageSubmit = (e) => {
+    if (userMessage === "") {
+      return;
+    }
     // adds the user's message to the state
     const currentUserMessage = {
       sender: "user",
@@ -110,12 +113,14 @@ function App() {
     setUserMessage("");
   };
 
-  const onSelect = (emoji, text) => {
+  const onSelect = (emoji, text, type) => {
     // when a user selects an option, adds this as a message
+    const messagePrefix = questionsDict[type].messagePrefix;
+
     const currentUserMessage = {
       sender: "user",
       emoji: emoji,
-      content: text,
+      content: messagePrefix + text,
       type: "text",
     };
     setMessages([...messages, currentUserMessage]);
@@ -169,7 +174,18 @@ function App() {
   //hello
 
   return (
-    <Grid  container direction="column" alignItems="center" sx={{ backgroundImage: `url('path_to_texture_image.jpg'), linear-gradient(to bottom, #e6f7ff, #ffffff)`, backgroundSize: "cover", minHeight: "100vh" , paddingBottom: "20px", paddingTop:"40px"}}>
+    <Grid
+      container
+      direction="column"
+      alignItems="center"
+      sx={{
+        backgroundImage: `url('path_to_texture_image.jpg'), linear-gradient(to bottom, #e6f7ff, #ffffff)`,
+        backgroundSize: "cover",
+        minHeight: "100vh",
+        paddingBottom: "20px",
+        paddingTop: "40px",
+      }}
+    >
       <Grid
         container
         direction="column"
@@ -187,25 +203,29 @@ function App() {
           gap: "10px",
         }}
       >
-      <Box
-      sx={{
-        height: "100%",
-        width: "100%",
-        overflowY: "auto", // Enable vertical scrolling
-        paddingRight: "10px", // Add a bit of right padding to avoid content covering the scrollbar
-      }}
-      >
-        <MessagesPane messages={messages} onSelect={onSelect} />
-        {/* <Selection> */}
-        {/* <Selection emoji="🚨" text="Emergency" onSelect={onSelect} />
-        {/* <Selection emoji="🍕" text="Food" onSelect={onSelect} /> */}
-        {/* <Selection emoji="🚑" text="Medical" onSelect={onSelect} />
-        <Selection emoji="🔥" text="Fire" onSelect={onSelect} />
-        <Selection emoji="🚔" text="Police" onSelect={onSelect} /> */}
-        {/* </Selection> */}
-      </Box>
+        <Box
+          sx={{
+            height: "100%",
+            width: "100%",
+            overflowY: "auto",
+            paddingRight: "10px",
+          }}
+        >
+          <MessagesPane messages={messages} onSelect={onSelect} />
+        </Box>
       </Grid>
-      <Grid item xs={12} sm={6} md={4} sx={{ position: "relative", left: -165, bottom: 20, paddingTop:"40px"}}>
+      <Grid
+        item
+        xs={12}
+        sm={6}
+        md={4}
+        sx={{
+          position: "relative",
+          left: -165,
+          bottom: 20,
+          paddingTop: "40px",
+        }}
+      >
         <InputBar
           placeholder="Use this to provide us textual details, if you can"
           onSubmit={onMessageSubmit}

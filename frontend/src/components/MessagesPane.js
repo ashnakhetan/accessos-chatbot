@@ -17,6 +17,7 @@ const MessagesPane = ({ messages, onSelect }) => {
             key={index}
             content={message.content}
             onSelect={onSelect}
+            type={message.type}
           />
         )
       )}

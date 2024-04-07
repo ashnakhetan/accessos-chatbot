@@ -10,10 +10,6 @@ const port = 8000;
 app.use(bodyParser.json());
 app.use(cors());
 
-// const openai = new OpenAI({
-//   apiKey: process.env.OPEN_AI_API_KEY,
-// });
-
 const anthropic = new Anthropic();
 
 app.get("/", (request, response) => {
@@ -32,7 +28,7 @@ app.post("/", async (request, response) => {
       max_tokens: 1000,
       temperature: 0,
       system:
-        'I am a 911 dispatcher. You will receive a message we received from a user. The following is the information we need. Can you extract the information provided, if they provided it? If they didn\'t provide it, please do not include it in your response. Format your answer as seen in the example later.\n- Address\n- Type of Incident\n- Details of Incident\n- Weapon Involved\n\nHere is an example of this task:\nMESSAGE: "hello i am hurt, my head is spinning, I AM ABOUT TO PASS OUT"\nYOUR RESPONSE: Type of Incident: Medical Emergency, Details of Incident: Head spinning and about to pass out',
+        'I am a 911 dispatcher. You will receive a message we received from a user. The following is the information we need. Can you extract the information provided, if they provided it? If they didn\'t provide it, please do not include it in your response. Format your answer as seen in the example later.\n- Address\n- Type of Incident\n- Details of Incident\n- Weapon Involved\n\nHere is an example of this task:\nMESSAGE: "hello i am hurt, my head is spinning, I AM ABOUT TO PASS OUT"\nYOUR RESPONSE: Type of Incident: Medical Emergency, Details of Incident: Head spinning and about to pass out\n\nDO NOT say: Address: Not Provided, Weapon Involved: Not Provided',
       messages: [
         {
           role: "user",
