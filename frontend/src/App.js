@@ -1,7 +1,7 @@
 import "./App.css";
 import Message from "./components/Message";
 import { Grid, Typography, Box } from "@mui/material";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import InputBar from "./components/InputBar";
 import Selection from "./components/Selection";
 import MessagesPane from "./components/MessagesPane";
@@ -171,7 +171,18 @@ function App() {
       console.error("There was a problem with your fetch operation:", error);
     }
   };
-  //hello
+  // Inside your functional component
+  const scrollToBottom = () => {
+    const scrollableContainer = document.getElementById("scrollableContainer");
+
+    if (scrollableContainer) {
+      scrollableContainer.scrollTop = scrollableContainer.scrollHeight;
+    }
+  };
+
+  useEffect(() => {
+    scrollToBottom(); // Call the function when the component updates (e.g., new content is added)
+  }, [messages]);
 
   return (
     <Grid
@@ -191,6 +202,7 @@ function App() {
         direction="column"
         alignItems="center"
         margin="auto"
+        position="relative"
         justifyContent="center"
         borderRadius={0}
         border={0}
@@ -198,20 +210,31 @@ function App() {
         sx={{
           height: "80vh",
           border: "none",
-          display: "flex",
-          flexDirection: "row",
+          // display: "flex",
+          // flexDirection: "row",
           gap: "10px",
         }}
       >
         <Box
+          id="scrollableContainer"
           sx={{
             height: "100%",
             width: "100%",
-            overflowY: "auto",
+            overflowY: "auto", // Enable vertical scrolling
             paddingRight: "10px",
+            position: "absolute",
+            top: 0,
+            y: 0, // Add a bit of right padding to avoid content covering the scrollbar
           }}
         >
           <MessagesPane messages={messages} onSelect={onSelect} />
+          {/* <Selection> */}
+          {/* <Selection emoji="🚨" text="Emergency" onSelect={onSelect} />
+        {/* <Selection emoji="🍕" text="Food" onSelect={onSelect} /> */}
+          {/* <Selection emoji="🚑" text="Medical" onSelect={onSelect} />
+        <Selection emoji="🔥" text="Fire" onSelect={onSelect} />
+        <Selection emoji="🚔" text="Police" onSelect={onSelect} /> */}
+          {/* </Selection> */}
         </Box>
       </Grid>
       <Grid
@@ -222,7 +245,7 @@ function App() {
         sx={{
           position: "relative",
           left: -165,
-          bottom: 20,
+          bottom: "5vh",
           paddingTop: "40px",
         }}
       >
