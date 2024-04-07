@@ -17,6 +17,10 @@ function App() {
     "Details of Incident",
     "Weapon Involved",
   ]);
+  const [infoToProvide911, setInfoToProvide911] = useState({
+    "User Condition":
+      "Person may be deaf, unable to communicate in English, or unable to speak.",
+  }); // this is the only information we start off knowing
 
   useEffect(() => {
     // creates a chatbot response every time the user sends a message
@@ -34,12 +38,20 @@ function App() {
       const currentChatbotResponses = [
         {
           sender: "chatbot",
-          content:
-            "You've provided all the information we need. Someone is on their way. You may continue to chat with us and provide more details, if you are able.",
+          content: `You've provided all the information we need. Here is a summary: ${JSON.stringify(
+            infoToProvide911
+          )}`,
           type: "text",
         },
       ];
-      // setChatbotMessages([...currentChatbotResponses]);
+
+      currentChatbotResponses.push({
+        sender: "chatbot",
+        content:
+          "Someone is on their way. You may continue to chat with us and provide more details, if you are able.",
+        type: "text",
+      });
+
       setMessages([...messages, ...currentChatbotResponses]);
       return;
     }
@@ -80,6 +92,13 @@ function App() {
     return;
   }, [detailsToRequest]);
 
+  useEffect(() => {
+    // once all required information is obtained, we can send the information to the server (911 dispatch)
+    if (detailsToRequest.length === 0) {
+      // insert details here on how to send to 911! (you guys know best how you do this)
+    }
+  }, [infoToProvide911]);
+
   const onMessageSubmit = (e) => {
     // adds the user's message to the state
     const currentUserMessage = {
@@ -102,68 +121,23 @@ function App() {
     setMessages([...messages, currentUserMessage]);
   };
 
-  const createReplyMessage = (apiResponse) => {
+  const updateDetailsNeeded = (apiResponse) => {
     // helper function to construct a reply message
-    // const criticalDetails = [
-    //   "Address",
-    //   "Type of Incident",
-    //   "Details of Incident",
-    //   "Weapon Involved",
-    // ];
     const detailsGiven = apiResponse.split(/[\n,]+/);
     console.log("detailsGiven:", detailsGiven);
+
+    detailsGiven.forEach((detail) => {
+      const [key, value] = detail.split(":");
+      setInfoToProvide911((prevState) => {
+        return { ...prevState, [key]: value };
+      });
+    });
 
     let currDetailsToRequest = detailsToRequest.filter(
       (x) => !detailsGiven.some((detail) => detail.includes(x))
     );
     setDetailsToRequest(currDetailsToRequest);
     console.log("detailsToRequest:", detailsToRequest);
-
-    // if (detailsToRequest.length === 0) {
-    //   const currentChatbotResponses = [
-    //     {
-    //       sender: "chatbot",
-    //       content:
-    //         "You've provided all the information we need. Someone is on their way. You may continue to chat with us and provide more details, if you are able.",
-    //       type: "text",
-    //     },
-    //   ];
-    //   return currentChatbotResponses;
-    // }
-    // const detail = detailsToRequest[0]; // pick the first detail that the chatbot needs to request
-    // const question = questionsDict[detail].question;
-    // console.log("question:", question);
-    // const options = questionsDict[detail].options;
-    // console.log("options:", options);
-
-    // const randomPrefix = // add an appropriate message prefix
-    //   messages.length < 2
-    //     ? questionPrefixes.initial[
-    //         Math.floor(Math.random() * questionPrefixes.initial.length)
-    //       ]
-    //     : questionPrefixes.subsequent[
-    //         Math.floor(Math.random() * questionPrefixes.subsequent.length)
-    //       ];
-
-    // const currentChatbotResponses = [
-    //   // make the question message
-    //   {
-    //     sender: "chatbot",
-    //     content: randomPrefix + " " + question,
-    //     type: "text",
-    //   },
-    // ];
-
-    // if (options != null) {
-    //   // push the options
-    //   currentChatbotResponses.push({
-    //     sender: "chatbot",
-    //     content: options,
-    //     type: "selection",
-    //   });
-    // }
-
-    // return currentChatbotResponses;
   };
 
   const getChatbotResponse = async (userMessage) => {
@@ -187,11 +161,7 @@ function App() {
       const apiResponse = data.output;
       console.log("Api Response:", apiResponse);
 
-      createReplyMessage(apiResponse);
-      // const chatbotResponses = createReplyMessage(apiResponse); // create a reply, given this api response
-      // console.log("chatbotResponses:", chatbotResponses);
-      // add all of the chatbot's response messages to the state
-      // setMessages((prevMessages) => [...prevMessages, ...chatbotResponses]);
+      updateDetailsNeeded(apiResponse);
     } catch (error) {
       console.error("There was a problem with your fetch operation:", error);
     }

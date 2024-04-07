@@ -4,7 +4,15 @@ import Button from "@mui/material/Button";
 const Selection = ({ emoji, text, onSelect }) => {
   return (
     <Grid container>
-      <Button onClick={() => onSelect(emoji, text)}>{(emoji, text)}</Button>
+      <Button onClick={() => onSelect(emoji, text)}>
+        {emoji ? (
+          <Typography variant="h5">
+            {emoji} {text}
+          </Typography>
+        ) : (
+          <Typography variant="h5">{text}</Typography>
+        )}
+      </Button>
     </Grid>
   );
 };
