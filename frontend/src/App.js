@@ -263,13 +263,6 @@ function App() {
               p: "20px",
             }}
           />
-          {/* <Selection> */}
-          {/* <Selection emoji="🚨" text="Emergency" onSelect={onSelect} />
-        {/* <Selection emoji="🍕" text="Food" onSelect={onSelect} /> */}
-          {/* <Selection emoji="🚑" text="Medical" onSelect={onSelect} />
-        <Selection emoji="🔥" text="Fire" onSelect={onSelect} />
-        <Selection emoji="🚔" text="Police" onSelect={onSelect} /> */}
-          {/* </Selection> */}
         </Box>
       </Grid>
       <Grid
